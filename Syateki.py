@@ -2,6 +2,7 @@ import os
 import pygame
 import random
 import sys
+import pygame as pg
 
 # 初期化
 pygame.init()
@@ -13,18 +14,55 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 40)
 
-# 的の設定
-target_radius = 30
-target_x = random.randint(target_radius, WIDTH - target_radius)
-target_y = random.randint(target_radius, HEIGHT - target_radius)
 
 # スコア
 score = 0
+mato_num = 10
 
-# メインループ
+class Mato:
+    img = pg.transform.scale(pg.image.load("fig/1.png").convert_alpha(), (100, 100))
+    """
+    的に関するクラス
+    """
+
+    def __init__(self, radius):
+        """
+        的を生成するための関数
+        引数：的の半径
+        visible:的に命中した際に表示を切り替えるためのもの
+        """
+        self.radius = radius
+        self.x = random.randint(radius, WIDTH - radius)
+        self.y = random.randint(radius, HEIGHT - radius)
+        self.last_update = pygame.time.get_ticks()
+        self.visible = True
+
+    def update(self):
+        """
+        一定時間経過したら新しい位置に移動するための関数
+        """
+        now = pygame.time.get_ticks()
+        broke_time = now - self.last_update
+        if  broke_time >= 3000:
+            self.x = random.randint(self.radius, WIDTH - self.radius)
+            self.y = random.randint(self.radius, HEIGHT - self.radius)
+            self.visible = True
+            self.last_update = now
+
+    def draw(self, surface):
+        """
+        的を描画する関数
+        """
+        if self.visible:
+            mato_rect = Mato.img.get_rect(center=(self.x, self.y))
+            surface.blit(Mato.img, mato_rect)
+
+
+mato_list = [Mato(50) for _ in range(mato_num)]
+
 running = True
 while running:
-    screen.fill((200, 220, 255))  # 背景色（水色）
+    screen.fill((200, 220, 255))
 
     # イベント処理
     for event in pygame.event.get():
@@ -34,18 +72,17 @@ while running:
         # クリックで命中判定
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = pygame.mouse.get_pos()
-            distance = ((mx - target_x) ** 2 + (my - target_y) ** 2) ** 0.5
-            if distance <= target_radius:
-                score += 1
-                # 的をランダムに再配置
-                target_x = random.randint(target_radius, WIDTH - target_radius)
-                target_y = random.randint(target_radius, HEIGHT - target_radius)
+            for mato in mato_list:
+                distance = ((mx - mato.x) ** 2 + (my - mato.y) ** 2) ** 0.5
+                if distance <= mato.radius and mato.visible:
+                    score += 1
+                    mato.visible = False
 
-    # 的の描画
-    pygame.draw.circle(screen, (255, 0, 0), (target_x, target_y), target_radius)
-    pygame.draw.circle(screen, (255, 255, 255), (target_x, target_y), target_radius // 2)
+    for mato in mato_list:
+        mato.update()
+        mato.draw(screen)
 
-    # スコア表示
+    # スコア表示 後でけす(marge前)
     score_text = font.render(f"Score: {score}", True, (0, 0, 0))
     screen.blit(score_text, (10, 10))
 
