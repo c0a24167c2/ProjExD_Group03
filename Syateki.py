@@ -28,21 +28,44 @@ class ScreenManager:
         self.message_font = message_font
 
 
-    def start_screen(self):
-        screen.fill((0,0,0)) # 黒色の画面
+        # 背景画像の読み込み
+        try:
+            self.start_bg_img = pygame.image.load("background.jpg").convert()
+            self.start_bg_img = pygame.transform.scale(self.start_bg_img,(WIDTH,HEIGHT))
+        except pygame.error as e:
+            print("背景画像の読み込みエラー")
+            self.start_bg_img = None
+        
+        try:
+            self.finish_bg_img = pygame.image.load("background.jpg").convert()
+            self.finish_bg_img = pygame.transform.scale(self.finish_bg_img, (WIDTH, HEIGHT))
+        except pygame.error as e:
+            print("背景画像の読み込みエラー")
+            self.finish_bg_img = None
 
-        title_txt = self.title_font.render("射的ゲーム",True,(255,255,255,))
+
+    def start_screen(self):
+        if self.start_bg_img:
+            self.screen.blit(self.start_bg_img, (0, 0))
+        else:
+            self.screen.fill((0,0,0)) # 黒色の画面
+
+        title_txt = self.title_font.render("射的ゲーム",True,(0,0,0,))
         title_rect = title_txt.get_rect(center=(self.WIDTH//2,self.HEIGHT//2))
         screen.blit(title_txt,title_rect)
         
-        message_text = self.message_font.render("-- スペースを押してスタート --",True,(255,255,255))
+        message_text = self.message_font.render("-- スペースを押してスタート --",True,(0,0,0))
         message_rect = message_text.get_rect(center=(self.WIDTH//2,self.HEIGHT//2+40))
         screen.blit(message_text,message_rect)
 
 
     def finish_screen(self, score):
-        screen.fill((0,0,0)) # 黒色の画面
-        title_txt = self.title_font.render(f"最終スコア:{score}",True,(255,255,255))
+        if self.finish_bg_img:
+            self.screen.blit(self.finish_bg_img, (0, 0))
+        else:
+            self.screen.fill((0,0,0)) # 黒色の画面
+
+        title_txt = self.title_font.render(f"最終スコア:{score}",True,(0,0,0))
         title_rect = title_txt.get_rect(center=(self.WIDTH//2,self.HEIGHT//2))
         screen.blit(title_txt,title_rect)
 
