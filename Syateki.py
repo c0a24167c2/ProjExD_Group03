@@ -23,7 +23,16 @@ score = 0
 
 
 def display_score(screen:pygame.surface, font:pygame.font, current_score: int):
-    score_text = font.render(f"Score: {score}", True, (0, 0, 0))
+    if score >= 100:
+        score_text = font.render(f"Score: {score}", True, (255, 215, 0))
+    elif score >= 30:
+        score_text = font.render(f"Score: {score}", True, (255, 255, 0))
+    elif score >= 20:    
+        score_text = font.render(f"Score: {score}", True, (255, 0, 0))
+    elif score >= 10:
+        score_text = font.render(f"Score: {score}", True, (0, 255, 0))
+    else:
+        score_text = font.render(f"Score: {score}", True, (0, 0, 0))
     screen.blit(score_text, (10, 10))
 
 # メインループ
