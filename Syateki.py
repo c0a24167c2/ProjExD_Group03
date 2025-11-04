@@ -131,10 +131,6 @@ while running:
         mato.update()
         mato.draw(screen)
 
-    # スコア表示 後でけす(marge前)
-    score_text = font.render(f"Score: {score}", True, (0, 0, 0))
-    screen.blit(score_text, (10, 10))
-
     pygame.display.flip()
     clock.tick(60)
 
