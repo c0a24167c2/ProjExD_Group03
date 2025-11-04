@@ -90,14 +90,14 @@ class ScreenManager:
 
         # 背景画像の読み込み
         try:
-            self.start_bg_img = pygame.image.load("background.jpg").convert()
+            self.start_bg_img = pygame.image.load("fig/background.jpg").convert()
             self.start_bg_img = pygame.transform.scale(self.start_bg_img,(WIDTH,HEIGHT))
         except pygame.error as e:
             print("背景画像の読み込みエラー")
             self.start_bg_img = None
         
         try:
-            self.finish_bg_img = pygame.image.load("background.jpg").convert()
+            self.finish_bg_img = pygame.image.load("fig/background.jpg").convert()
             self.finish_bg_img = pygame.transform.scale(self.finish_bg_img, (WIDTH, HEIGHT))
         except pygame.error as e:
             print("背景画像の読み込みエラー")
