@@ -26,8 +26,6 @@ time_limit_sec = 60
 time_limit_ms = time_limit_sec * 1000
 start_time_ms = pygame.time.get_ticks()
 
-#難易度lv
-#diff_lv = 1
 
 
 def time_desiplay_count(screen:pygame.surface, font_normal:pygame.font, font_large:pygame.font, start_time_ms:int, time_limit_ms:int)-> bool:
@@ -56,19 +54,6 @@ def time_desiplay_count(screen:pygame.surface, font_normal:pygame.font, font_lar
     return remaining_time_ms <= 0
 
 
-#def level_display(screen, font:str, start_time_ms:int, time_limit_ms:int, diff_lv):
-    """
-    難易度lvの表示
-    20秒ごとに難易度を上げる
-    """
-    #current_time_ms = pygame.time.get_ticks()
-    #elapsed_time_ms = current_time_ms - start_time_ms
-    #remainng_time_ms = time_limit_ms - elapsed_time_ms
-    #remainng_seconds = max(0, remainng_time_ms // 1000)
-    #if remainng_seconds % 20 == 0:
-        #diff_lv += 1
-    #level_text = font.render(f"now difficult level:{diff_lv}lv", True, (0,0,0))
-    #screen.blit(level_text, (WIDTH - level_text.get_width() -10, 30))
 # メインループ
 running = True
 while running:
@@ -100,7 +85,6 @@ while running:
     count_display_time = time_desiplay_count(screen, font_normal, font_large, start_time_ms, time_limit_ms)
     if count_display_time:
         running = False
-    #count_level_display = level_display(screen, font_normal, start_time_ms, time_limit_ms, diff_lv)
 
     pygame.display.flip()
     clock.tick(60)
