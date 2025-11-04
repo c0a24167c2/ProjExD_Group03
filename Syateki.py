@@ -20,10 +20,11 @@ score = 0
 mato_num = 10
 
 class Mato:
-    img = pg.transform.scale(pg.image.load("fig/1.png").convert_alpha(), (100, 100))
     """
     的に関するクラス
     """
+    img = pg.transform.scale(pg.image.load("fig/1.png").convert_alpha(), (100, 100))
+    used_positions = set()
 
     def __init__(self, radius):
         """
@@ -32,8 +33,34 @@ class Mato:
         visible:的に命中した際に表示を切り替えるためのもの
         """
         self.radius = radius
-        self.x = random.randint(radius, WIDTH - radius)
-        self.y = random.randint(radius, HEIGHT - radius)
+        self.cols = 8  # 横方向分割
+        self.rows = 6  # 縦方向分割
+        cell_w = WIDTH // self.cols
+        cell_h = HEIGHT // self.rows
+
+        # 使用可能な範囲
+        available_positions = [
+            (col, row)
+            for col in range(self.cols)
+            for row in range(1, self.rows)  # ← ここがポイント
+            if (col, row) not in Mato.used_positions
+        ]
+
+        # もしすべて埋まっていたらリセット
+        if not available_positions:
+            Mato.used_positions.clear()
+            available_positions = [
+                (col, row)
+                for col in range(self.cols)
+                for row in range(1, self.rows)
+            ]
+
+        col, row = random.choice(available_positions)
+        Mato.used_positions.add((col, row))
+
+        self.x = col * cell_w + cell_w // 2
+        self.y = row * cell_h + cell_h // 2
+
         self.last_update = pygame.time.get_ticks()
         self.visible = True
 
@@ -44,10 +71,32 @@ class Mato:
         now = pygame.time.get_ticks()
         broke_time = now - self.last_update
         if  broke_time >= 3000:
-            self.x = random.randint(self.radius, WIDTH - self.radius)
-            self.y = random.randint(self.radius, HEIGHT - self.radius)
             self.visible = True
             self.last_update = now
+
+            cell_w = WIDTH // self.cols
+            cell_h = HEIGHT // self.rows
+
+            available_positions = [
+                (col, row)
+                for col in range(self.cols)
+                for row in range(1, self.rows)
+                if (col, row) not in Mato.used_positions
+            ]
+
+            if not available_positions:
+                Mato.used_positions.clear()
+                available_positions = [
+                    (col, row)
+                    for col in range(self.cols)
+                    for row in range(1, self.rows)
+                ]
+
+            col, row = random.choice(available_positions)
+            Mato.used_positions.add((col, row))
+
+            self.x = col * cell_w + cell_w // 2
+            self.y = row * cell_h + cell_h // 2
 
     def draw(self, surface):
         """
